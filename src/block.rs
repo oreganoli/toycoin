@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
-
+use serde::{Deserialize, Serialize};
+#[derive(Deserialize, Serialize)]
 pub struct Block {
     index: u64,
     timestamp: DateTime<Utc>,
@@ -8,6 +9,7 @@ pub struct Block {
     proof: u8,
 }
 
+#[derive(Deserialize, Serialize)]
 pub enum Transaction {
     /// Grant a user coins when they successfully mine them.
     Grant { to: String, amount: i64 },
