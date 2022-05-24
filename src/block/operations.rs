@@ -33,4 +33,8 @@ impl Blockchain {
         }
         balance_map
     }
+    /// Return the currently pending transactions.
+    pub fn pending(&self) -> Vec<Transaction> {
+        self.blocks.last().unwrap().transactions.clone()
+    }
 }
