@@ -41,8 +41,16 @@ impl IntoResponse for BlockchainError {
     }
 }
 /// Mutable application state to be shared between HTTP requests.
+#[derive(Clone)]
 pub struct State {
     blockchain: Arc<Mutex<Blockchain>>,
+}
+impl From<Blockchain> for State {
+    fn from(bc: Blockchain) -> Self {
+        Self {
+            blockchain: Arc::new(Mutex::new(bc)),
+        }
+    }
 }
 /// GET /pending
 pub async fn get_pending(Extension(state): Extension<State>) -> impl IntoResponse {
