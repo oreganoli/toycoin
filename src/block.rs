@@ -4,6 +4,9 @@ use chrono::{DateTime, Utc};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+/// Actions to perform upon the blockchain.
+pub mod operations;
+
 #[derive(Clone, Deserialize, Serialize)]
 pub struct Block {
     index: u64,
@@ -40,36 +43,6 @@ impl Blockchain {
             previous_hash: b"genesis_genesis_genesis_genesis_".to_vec(),
             proof: 253,
         }
-    }
-    /// Calculate everyone's balance.
-    pub fn balance(&self) -> BTreeMap<String, i64> {
-        let mut balance_map: BTreeMap<String, i64> = BTreeMap::new();
-        let transactions = self.blocks.iter().flat_map(|each| each.transactions.iter());
-        for transaction in transactions {
-            match transaction {
-                Transaction::Grant { to, amount } => match balance_map.get_mut(to) {
-                    Some(account) => *account += *amount,
-                    None => {
-                        balance_map.insert(to.clone(), *amount);
-                    }
-                },
-                Transaction::Wire { from, to, amount } => {
-                    match balance_map.get_mut(from) {
-                        Some(account) => *account -= *amount,
-                        None => {
-                            balance_map.insert(from.clone(), -(*amount));
-                        }
-                    };
-                    match balance_map.get_mut(to) {
-                        Some(account) => *account += *amount,
-                        None => {
-                            balance_map.insert(to.clone(), *amount);
-                        }
-                    };
-                }
-            }
-        }
-        balance_map
     }
     /// Closes the current block and starts a new one.
     pub fn commit(&mut self) {
