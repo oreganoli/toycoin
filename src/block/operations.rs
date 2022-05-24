@@ -51,6 +51,15 @@ impl Blockchain {
             false
         }
     }
+    /// Wire someone money.
+    pub fn wire(&mut self, from: String, to: String, amount: i64) -> Result<(), BlockchainError> {
+        if amount < 0 {
+            return Err(BlockchainError::NegativeTransfer { from, to, amount });
+        }
+        let wire = Transaction::Wire { from, to, amount };
+        self.last_block_mut().transactions.push(wire);
+        Ok(())
+    }
     /// Return all the committed blocks, the whole chain up to now.
     pub fn chain(&self) -> Vec<Block> {
         self.blocks

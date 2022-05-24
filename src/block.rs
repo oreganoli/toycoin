@@ -106,4 +106,10 @@ impl Blockchain {
 pub enum BlockchainError {
     /// In the current state, some accounts would end up with negative funds.
     NegativeBalances(Vec<(String, i64)>),
+    /// A negative wire transfer was attempted.
+    NegativeTransfer {
+        from: String,
+        to: String,
+        amount: i64,
+    },
 }
