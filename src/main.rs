@@ -1,5 +1,7 @@
-mod block;
+pub mod block;
+mod web;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     println!("Hello, world!");
 }
