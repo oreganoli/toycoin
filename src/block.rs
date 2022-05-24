@@ -78,6 +78,8 @@ impl Blockchain {
         // Get a new proof number.
         let mut random = rand::thread_rng();
         let proof: u8 = random.gen();
+        // This is so we can manually guess numbers while debugging without having to write a miner.
+        eprintln!("New random proof is {}", proof);
         let new_block = Block {
             index: self.length,
             proof,
