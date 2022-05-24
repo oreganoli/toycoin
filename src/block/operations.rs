@@ -35,6 +35,20 @@ impl Blockchain {
     }
     /// Return the currently pending transactions.
     pub fn pending(&self) -> Vec<Transaction> {
-        self.blocks.last().unwrap().transactions.clone()
+        self.last_block().transactions.clone()
+    }
+    /// Guess the proof. Reward the miner if the guess was correct.
+    pub fn guess(&mut self, guess: u8, miner: String) -> bool {
+        let grant = Transaction::Grant {
+            to: miner,
+            amount: self.grant_amount,
+        };
+        let block = self.last_block_mut();
+        if guess == block.proof {
+            block.transactions.push(grant);
+            true
+        } else {
+            false
+        }
     }
 }

@@ -34,6 +34,12 @@ pub struct Blockchain {
     blocks: Vec<Block>,
 }
 impl Blockchain {
+    fn last_block(&self) -> &Block {
+        self.blocks.last().unwrap()
+    }
+    fn last_block_mut(&mut self) -> &mut Block {
+        self.blocks.last_mut().unwrap()
+    }
     fn genesis_block() -> Block {
         Block {
             index: 0,
