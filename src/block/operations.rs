@@ -33,19 +33,4 @@ impl Blockchain {
         }
         balance_map
     }
-    /// Validate state.
-    pub fn validate_state(&self) -> Result<(), BlockchainError> {
-        let balances = self.balance();
-        let mut negative_balances: Vec<(String, i64)> = vec![];
-        for (account, balance) in balances.iter() {
-            if (*balance < 0) {
-                negative_balances.push((account.clone(), *balance));
-            }
-        }
-        if negative_balances.is_empty() {
-            Ok(())
-        } else {
-            Err(BlockchainError::NegativeBalances(negative_balances))
-        }
-    }
 }
