@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use chrono::{DateTime, Utc};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -54,7 +52,7 @@ impl Blockchain {
         let balances = self.balance();
         let mut negative_balances: Vec<(String, i64)> = vec![];
         for (account, balance) in balances.iter() {
-            if (*balance < 0) {
+            if *balance < 0 {
                 negative_balances.push((account.clone(), *balance));
             }
         }
