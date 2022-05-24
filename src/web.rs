@@ -9,6 +9,9 @@ use axum::{
     response::{IntoResponse, Response},
     Extension, Json,
 };
+/// Request types for HTTP methods that get data from the request body.
+mod requests;
+pub use requests::*;
 
 impl IntoResponse for BlockchainError {
     fn into_response(self) -> Response {
@@ -61,10 +64,25 @@ pub async fn post_commit(Extension(state): Extension<State>) -> impl IntoRespons
     Json(state.blockchain.lock().unwrap().commit())
 }
 /// POST /guess
-pub async fn post_guess(Extension(state): Extension<State>) -> impl IntoResponse {
-    todo!();
+pub async fn post_guess(
+    Extension(state): Extension<State>,
+    Json(req): Json<GuessRequest>,
+) -> impl IntoResponse {
+    let correct = state.blockchain.lock().unwrap().guess(req.guess, req.miner);
+    Json(correct)
 }
 /// POST /wire
-pub async fn post_wire(Extension(state): Extension<State>) -> impl IntoResponse {
-    todo!();
+pub async fn post_wire(
+    Extension(state): Extension<State>,
+    Json(req): Json<WireRequest>,
+) -> impl IntoResponse {
+    match state
+        .blockchain
+        .lock()
+        .unwrap()
+        .wire(req.from, req.to, req.amount)
+    {
+        Ok(_) => Ok(StatusCode::ACCEPTED),
+        Err(e) => Err(e),
+    }
 }
