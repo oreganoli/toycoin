@@ -51,4 +51,12 @@ impl Blockchain {
             false
         }
     }
+    /// Return all the committed blocks, the whole chain up to now.
+    pub fn chain(&self) -> Vec<Block> {
+        self.blocks
+            .iter()
+            .take(self.length as usize)
+            .map(|block| block.clone())
+            .collect::<Vec<_>>()
+    }
 }
