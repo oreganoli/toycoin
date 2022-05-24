@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 /// Actions to perform upon the blockchain.
 pub mod operations;
-
 #[derive(Clone, Deserialize, Serialize)]
 pub struct Block {
     index: u64,
@@ -45,7 +44,8 @@ impl Blockchain {
         }
     }
     /// Closes the current block and starts a new one.
-    pub fn commit(&mut self) {
+    pub fn commit(&mut self) -> Result<(), BlockchainError> {
+        self.validate_state()?;
         self.length += 1;
         // Serialize the last block for hashing.
         let last_block_ref = self.blocks.last().unwrap();
@@ -65,6 +65,7 @@ impl Blockchain {
             transactions: vec![],
         };
         self.blocks.push(new_block);
+        Ok(())
     }
 
     pub fn new() -> Self {
@@ -76,4 +77,10 @@ impl Blockchain {
         chain.blocks.push(Self::genesis_block());
         chain
     }
+}
+
+#[derive(Serialize, Debug, Deserialize)]
+pub enum BlockchainError {
+    /// In the current state, some accounts would end up with negative funds.
+    NegativeBalances(Vec<(String, i64)>),
 }
